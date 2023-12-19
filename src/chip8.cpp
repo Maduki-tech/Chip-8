@@ -94,7 +94,7 @@ Chip8::Chip8()
     tableF[0x65] = &Chip8::OP_Fx65;
 }
 
-void Chip8::LoadRoam(char const *filename) {
+void Chip8::LoadROM(char const *filename) {
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     if (file.is_open()) {
 
