@@ -79,7 +79,7 @@ Chip8::Chip8()
     tableE[0x1] = &Chip8::OP_ExA1;
     tableE[0xE] = &Chip8::OP_Ex9E;
 
-    for (size_t i = 0; i<= 0x65; i++){
+    for (size_t i = 0; i <= 0x65; i++) {
         tableF[i] = &Chip8::OP_NULL;
     }
 
@@ -92,7 +92,6 @@ Chip8::Chip8()
     tableF[0x33] = &Chip8::OP_Fx33;
     tableF[0x55] = &Chip8::OP_Fx55;
     tableF[0x65] = &Chip8::OP_Fx65;
-
 }
 
 void Chip8::LoadRoam(char const *filename) {
@@ -119,6 +118,31 @@ void Chip8::LoadRoam(char const *filename) {
         delete[] buffer;
     }
 }
+
+void Chip8::Cycle() {
+    // Fetch
+    opcode = (memory[pc] << 8u) | memory[pc + 1];
+
+    // increment for next Cycle
+    pc += 2;
+
+    // Decode and Execute
+    ((*this).*(table[(opcode & 0xF000u) >> 12u]))();
+
+    // Decrement the delay tiemr if its been Set
+    if (delayTimer > 0) {
+        --delayTimer;
+    }
+
+    // Decrement the sound timer if its been Set
+    if (soundTimer > 0) {
+        --soundTimer;
+    }
+}
+
+/*
+***********************Private Funcitons******************
+*/
 
 /*Emulator Operations*/
 /**
